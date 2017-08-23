@@ -1,11 +1,9 @@
-bcc:	parser.tab.c lex.yy.c
-	gcc parser.tab.c lex.yy.c -lfl -o bcc
-parser.tab.c: parser.y 
-	bison -d parser.y 
-parser.tab.h: parser.y
-	bison -d parser.y 
-lex.yy.c: scanner.l parser.tab.h
-	flex scanner.l
+scanner: lex.yy.c
+	gcc lex.yy.c -lfl -o scanner
+parser.tab.h: parser.x
+	bison -d parser.x
+lex.yy.c: scanner.x parser.tab.h
+	flex scanner.x
 
 .PHONY: clean 
 clean:

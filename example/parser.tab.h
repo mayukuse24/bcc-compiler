@@ -49,9 +49,7 @@ extern int yydebug;
     statement_list = 259,
     NUMBER = 260,
     IDENTIFIER = 261,
-    KEYWORD = 262,
-    ARRAY = 263,
-    ETOK = 264
+    ETOK = 262
   };
 #endif
 
