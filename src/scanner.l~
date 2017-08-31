@@ -1,0 +1,61 @@
+%{
+#include "parser.tab.h"
+%}
+
+number		[0-9][0-9]*
+identifier	[a-zA-Z][a-zA-Z0-9]*
+
+%%
+
+"declblock"  {printf("DECLBLOCK ");return(DB);}
+"codeblock"  {printf("CODEBLOCK ");return(CB);}
+
+"for" {printf("FOR ");return(FOR);}
+"if"  {printf("IF ");return(IF);}
+"while" {printf("WHILE ");return(WHILE);}
+"L"{number}  {printf("LABEL ");return(LABEL);}
+"goto"  {printf("GOTO ");return(GOTO);}
+"got"  {printf("GOT ");return(GOT);}
+
+"print"  {printf("PRINT ");return(PRINT);}
+"println"  {printf("PRINTLN ");return(PRINTLN);}
+"read"  {printf("READ ");return(READ);}
+
+"||"  {printf("OR ");yylval=OR;return LOGOP;}
+"&&"  {printf("AND ");yylval=AND;return LOGOP;}
+
+"int"	{printf("INTEGER ");yylval=INTEGER;return(DATATYPE);}
+"string"  {printf("STRING ");yylval=STRING;return(DATATYPE);}
+
+
+\"(\\.|[^"])*\"   {printf("TEXT ");return(TEXT);}
+
+{identifier}"["{number}"]"  {printf("ARRAY ");return(ARRAY);}
+{identifier}  {printf("IDENTI ");return(IDENTIFIER);}
+{number}  {printf("NUM ");return(NUMBER);}
+
+"+"  {printf("ADD ");return '+';}
+"-"  {printf("SUB ");return '-';}
+"*"  {printf("MUL ");return '*';}
+"="  {printf("EQ ");return '=';}
+
+"{"  {printf("OCB ");return '{';}
+"}"  {printf("CCB ");return '}';}
+
+">"  {printf("GT ");yylval=GT;return RELOP;}
+">=" {printf("GE ");yylval=GE;return RELOP;}
+"<"  {printf("LT ");yylval=LT;return RELOP;}
+"<=" {printf("LE ");yylval=LE;return RELOP;}
+"==" {printf("EQ ");yylval=EQ;return RELOP;}
+"!=" {printf("NE ");yylval=NE;return RELOP;}
+
+","  {printf("COMMA ");return ',';}
+":"  {printf("COLON ");return ':';}
+";"  {printf("SCOLON ");return ';';}
+
+[ \t]  { /* Do nothing */ }
+
+.		                { printf("Unexpected token : %s\n", yytext);
+                                  return ETOK;
+		                }
+%%

@@ -1,7 +1,7 @@
-{
-	declaration_list
+declblock {
+int a;
 }
 
-{
-	statement_list
+codeblock{
+time = "heythere";
 }

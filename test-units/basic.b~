@@ -1,0 +1,6 @@
+declblock {
+	int ant;
+}
+codeblock {
+	ant = 4;
+}

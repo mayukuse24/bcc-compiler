@@ -1,7 +1,0 @@
-%{
-  #include <stdio.h>
-  #include <stdlib.h>
-  FILE *yyin;
-  int yylex (void);
-  void yyerror (char const *s);
-%}

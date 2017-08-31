@@ -45,13 +45,36 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    declaration_list = 258,
-    statement_list = 259,
+    DB = 258,
+    CB = 259,
     NUMBER = 260,
     IDENTIFIER = 261,
-    KEYWORD = 262,
-    ARRAY = 263,
-    ETOK = 264
+    TEXT = 262,
+    INTEGER = 263,
+    STRING = 264,
+    LABEL = 265,
+    DATATYPE = 266,
+    ARRAY = 267,
+    ETOK = 268,
+    LOGOP = 269,
+    AND = 270,
+    OR = 271,
+    IF = 272,
+    WHILE = 273,
+    FOR = 274,
+    ELSE = 275,
+    GOTO = 276,
+    GOT = 277,
+    PRINT = 278,
+    PRINTLN = 279,
+    READ = 280,
+    RELOP = 281,
+    GT = 282,
+    LT = 283,
+    GE = 284,
+    LE = 285,
+    EQ = 286,
+    NE = 287
   };
 #endif
 

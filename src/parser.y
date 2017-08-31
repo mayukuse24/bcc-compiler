@@ -1,0 +1,117 @@
+%{
+  #include <stdio.h>
+  #include <stdlib.h>
+  FILE *yyin;
+  int yylex (void);
+  void yyerror (char const *s);
+%}
+
+%error-verbose
+%token DB CB
+%token NUMBER IDENTIFIER TEXT
+%token INTEGER STRING
+%token LABEL
+%token DATATYPE
+%token ARRAY
+%token ETOK
+%token LOGOP AND OR
+%token IF WHILE FOR ELSE GOTO GOT
+%token PRINT PRINTLN READ  
+%token RELOP GT LT GE LE EQ NE					      
+%left '='
+%left '+' '-'
+%left '*'
+%left RELOP LOGOP
+%%
+
+program: DB decl_block CB code_block
+
+decl_block:   '{'declaration_list '}'
+		
+declaration_list:  declaration
+	|	declaration declaration_list
+		;
+
+declaration:	DATATYPE declare ';'
+		
+code_block:  '{'statement_list '}'
+		
+statement_list:	statement
+	| 	statement statement_list
+	| 	label_statement statement_list
+		;
+
+declare: 	declare ',' IDENTIFIER
+	|	declare ',' ARRAY
+	|	ARRAY
+	|	IDENTIFIER
+	|	IDENTIFIER '=' NUMBER
+	|	IDENTIFIER '=' TEXT
+		;
+
+label_statement :  LABEL ':' statement
+
+statement: 	IF boolexpr code_block
+	|	IF boolexpr code_block ELSE code_block
+	|	WHILE boolexpr code_block
+	|	FOR IDENTIFIER '=' NUMBER ',' NUMBER code_block
+	|	FOR IDENTIFIER '=' NUMBER ',' NUMBER ',' NUMBER code_block
+	|	GOTO LABEL IF boolexpr ';'
+	|	GOT LABEL ';'
+	|	IDENTIFIER '=' expr ';'
+	|	IDENTIFIER '=' TEXT ';'
+	|	ARRAY '=' expr ';'
+	|	PRINT element ';'
+	|	PRINTLN element ';'
+	|	READ IDENTIFIER ';' 
+		;
+
+expr:		expr '+' expr
+	|	expr '-' expr
+	|	expr '*' expr
+	| 	NUMBER
+	|	IDENTIFIER
+	|	ARRAY
+		;
+
+boolexpr:	boolexpr LOGOP boolexpr
+	|	relexpr
+	;
+
+relexpr:	NUMBER RELOP NUMBER
+	|	NUMBER RELOP IDENTIFIER
+	|	IDENTIFIER RELOP NUMBER
+	|	IDENTIFIER RELOP IDENTIFIER
+		;
+
+element:	element ',' NUMBER
+	|	element ',' IDENTIFIER
+	|	element ',' TEXT
+	|	NUMBER
+	|	IDENTIFIER
+	|	TEXT
+	;
+
+%%
+
+void yyerror (char const *s)
+{
+       fprintf (stderr, "%s\n", s);
+}
+
+int main(int argc, char *argv[])
+{
+	if (argc == 1 ) {
+		fprintf(stderr, "Correct usage: bcc filename\n");
+		exit(1);
+	}
+
+	if (argc > 2) {
+		fprintf(stderr, "Passing more arguments than necessary.\n");
+		fprintf(stderr, "Correct usage: bcc filename\n");
+	}
+
+	yyin = fopen(argv[1], "r");
+
+	yyparse();
+}
