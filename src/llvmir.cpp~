@@ -1,0 +1,302 @@
+#include "ast.h"
+
+using namespace llvm;
+
+Value *numnode::codegen()
+{
+    return ConstantInt::get(TheContext, APInt(32,val, true));
+}
+
+Value *identnode::codegen()
+{
+    Value *V = NamedValues[id];
+    llvm::GlobalVariable * globalInteger = new llvm::GlobalVariable(*TheModule, llvm::Type::getInt64Ty(TheContext), false, llvm::GlobalValue::CommonLinkage, NULL, id);
+
+    return V;
+}
+
+Value *arrnode::codegen()
+{
+    Value *V;
+    return V;
+}
+
+Value *plusnode::codegen()
+{
+    Value *L = left->codegen();
+    Value *R = right->codegen();
+    if (!L || !R)
+	return nullptr;
+    
+    return Builder.CreateFAdd(L, R, "addtmp");
+}
+
+Value *mulnode::codegen()
+{
+    Value *L = left->codegen();
+    Value *R = right->codegen();
+    if (!L || !R)
+	return nullptr;
+    
+    return Builder.CreateFMul(L, R, "multmp");
+}
+
+Value* subnode::codegen()
+{
+    Value *L = left->codegen();
+    Value *R = right->codegen();
+    if (!L || !R)
+	return nullptr;
+    
+    return Builder.CreateFSub(L, R, "subtmp");
+}
+
+Value* codeblock::codegen()
+{
+    for(auto itr=codelist->begin();itr!=codelist->end();itr++)
+    {
+	(*itr)->codegen();
+    }
+}
+
+void declnode::codegen()
+{
+    for(auto itr=instancelist->begin();itr!=instancelist->end();itr++)
+    {
+	Value* temp = ConstantInt::get(TheContext, APInt(32,0, true));
+	NamedValues[(*itr)->id] = temp;
+    }
+}
+
+void declblock::codegen()
+{
+    for(auto itr=declist->begin();itr!=declist->end();itr++)
+    {
+	(*itr)->codegen();
+    }
+}
+
+void prognode::codegen()
+{
+    decl_block->codegen();
+    code_block->codegen();
+}
+
+
+Value* andnode::codegen()
+{
+    return Builder.CreateAnd(left->codegen(), right->codegen(), "andtmp");
+}
+
+Value* ornode::codegen()
+{
+    return Builder.CreateOr(left->codegen(), right->codegen(), "ortmp");
+}
+
+Value* gtnode::codegen()
+{
+    return Builder.CreateICmpUGT(left->codegen(), right->codegen(), "gttmp");
+}
+
+Value* ltnode::codegen()
+{
+    return Builder.CreateICmpULT(left->codegen(), right->codegen(), "lttmp");
+}
+
+Value* genode::codegen()
+{
+    return Builder.CreateICmpUGE(left->codegen(), right->codegen(), "getmp");
+}
+
+Value* lenode::codegen()
+{
+    return Builder.CreateICmpULE(left->codegen(), right->codegen(), "letmp");
+}
+
+Value* eqnode::codegen()
+{
+    return Builder.CreateICmpEQ(left->codegen(), right->codegen(), "eqtmp");
+}
+
+Value* nenode::codegen()
+{
+    return Builder.CreateICmpNE(left->codegen(), right->codegen(), "netmp");
+}
+
+Value* truenode::codegen()
+{
+    return ConstantInt::get(TheContext, APInt(64,1, true));
+}
+
+Value* falsenode::codegen()
+{
+    return ConstantInt::get(TheContext, APInt(64,0, true));
+}
+
+Value* forstmt::codegen()
+{
+    
+}
+
+/*
+Value* forstmt::codegen()
+{
+    // Emit the start code first, without 'variable' in scope.
+    Value *StartVal = from->codegen();
+    if (!StartVal)
+	return nullptr;
+
+    // Make the new basic block for the loop header, inserting after current
+    // block.
+    Function *TheFunction = Builder.GetInsertBlock()->getParent();
+    BasicBlock *PreheaderBB = Builder.GetInsertBlock();
+    BasicBlock *LoopBB = BasicBlock::Create(TheContext, "loop", TheFunction);
+    
+    // Insert an explicit fall through from the current block to the LoopBB.
+    Builder.CreateBr(LoopBB);
+
+    // Start insertion in LoopBB.
+    Builder.SetInsertPoint(LoopBB);
+    
+    // Start the PHI node with an entry for Start.
+    PHINode *Variable = Builder.CreatePHI(Type::getDoubleTy(TheContext), 2, id.c_str());
+    Variable->addIncoming(StartVal, PreheaderBB);
+
+    // Within the loop, the variable is defined equal to the PHI node.  If it
+    // shadows an existing variable, we have to restore it, so save it now.
+    Value *OldVal = NamedValues[id];
+    NamedValues[id] = Variable;
+    
+    // Emit the body of the loop.  This, like any other expr, can change the
+    // current BB.  Note that we ignore the value computed by the body, but don't
+    // allow an error.
+    if (!code->codegen())
+	return nullptr;
+
+    // Emit the step value.
+    Value *StepVal = skip->codegen(); //defaults to 1
+    if (!StepVal)
+	return nullptr;
+    
+    // Compute the end condition.
+    Value *EndCond = to->codegen();
+    if (!EndCond)
+	return nullptr;
+    
+    // Convert condition to a bool by comparing non-equal to 0.0.
+    EndCond = Builder.CreateFCmpONE(EndCond, ConstantFP::get(TheContext, APFloat(0.0)), "loopcond");
+
+    Value *NextVar = Builder.CreateFAdd(Variable, StepVal, "nextvar");
+
+    // Create the "after loop" block and insert it.
+    BasicBlock *LoopEndBB = Builder.GetInsertBlock();
+    BasicBlock *AfterBB = BasicBlock::Create(TheContext, "afterloop", TheFunction);
+
+    // Insert the conditional branch into the end of LoopEndBB.
+    Builder.CreateCondBr(EndCond, LoopBB, AfterBB);
+    
+    // Any new code will be inserted in AfterBB.
+    Builder.SetInsertPoint(AfterBB);
+    
+    // Add a new entry to the PHI node for the backedge.
+    Variable->addIncoming(NextVar, LoopEndBB);
+    
+    // Restore the unshadowed variable.
+    if (OldVal)
+	NamedValues[id] = OldVal;
+    else
+	NamedValues.erase(id);
+    
+    // for expr always returns 0.0.
+    return Constant::getNullValue(Type::getDoubleTy(TheContext));
+}
+*/
+
+Value* whilestmt::codegen()
+{
+    
+}
+
+Value* ifstmt::codegen()
+{
+    
+}
+
+Value* ifelsestmt::codegen()
+{
+
+}
+
+/*
+Value* ifelsestmt::codegen()
+{
+    Value *CondV = bval->codegen();
+    if (!CondV)
+	return nullptr;
+    
+    // Convert condition to a bool by comparing non-equal to 0.0.
+    CondV = Builder.CreateFCmpONE(CondV, ConstantFP::get(TheContext, APFloat(0.0)), "ifcond");
+
+    Function *TheFunction = Builder.GetInsertBlock()->getParent();
+
+    // Create blocks for the then and else cases.  Insert the 'then' block at the end of the function.
+    BasicBlock *ThenBB = BasicBlock::Create(TheContext, "then", TheFunction);
+    BasicBlock *ElseBB = BasicBlock::Create(TheContext, "else");
+    BasicBlock *MergeBB = BasicBlock::Create(TheContext, "ifcont");
+
+    Builder.CreateCondBr(CondV, ThenBB, ElseBB);
+
+    // Emit then value.
+    Builder.SetInsertPoint(ThenBB);
+    
+    Value *ThenV = ifcode->codegen();
+    if (!ThenV)
+	return nullptr;
+    
+    Builder.CreateBr(MergeBB);
+    // Codegen of 'Then' can change the current block, update ThenBB for the PHI.
+    ThenBB = Builder.GetInsertBlock();
+
+    // Emit else block.
+    TheFunction->getBasicBlockList().push_back(ElseBB);
+    Builder.SetInsertPoint(ElseBB);
+    
+    Value *ElseV = elsecode->codegen();
+    if (!ElseV)
+	return nullptr;
+    
+    Builder.CreateBr(MergeBB);
+    // codegen of 'Else' can change the current block, update ElseBB for the PHI.
+    ElseBB = Builder.GetInsertBlock();
+ 
+    // Emit merge block.
+    TheFunction->getBasicBlockList().push_back(MergeBB);
+    Builder.SetInsertPoint(MergeBB);
+    PHINode *PN = Builder.CreatePHI(Type::getDoubleTy(TheContext), 2, "iftmp");
+    
+    PN->addIncoming(ThenV, ThenBB);
+    PN->addIncoming(ElseV, ElseBB);
+    return PN;
+}
+*/
+
+Value* printstmt::codegen()
+{
+    
+}
+
+Value* readstmt::codegen()
+{
+    
+}
+
+Value* assignstmt::codegen()
+{
+    //LoadExpr NamedValues?
+    Value* exprval = exp->codegen();
+    //Store Expr value to LHS
+    Value* lhsvar = var->codegen();
+    
+    return new llvm::StoreInst(exprval, lhsvar, false);
+}
+

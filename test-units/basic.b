@@ -19,12 +19,26 @@ goto L1 if ant > 5 ;
 
 got L1 ;
 
-if alp >= beta && 4>5 {
+if alp >= beta && arr[8]>5 {
    ant = 7 ;
 }
 
+if arr[i] > arr[j] {
+
+   print "works" ;
+}
+else {
+
+     print "doesnt work" ;
+
+}
+
 for car = 1, 100, 2 {
-    rat = 10;
+
+    while true {
+
+    	  beta = 123 ;
+    }
 }
 
 while car > rat {

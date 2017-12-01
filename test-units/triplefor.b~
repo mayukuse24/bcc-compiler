@@ -1,0 +1,9 @@
+declblock {
+   int ant,temp,i,j,temp;
+   int arr[100];
+}
+
+codeblock {
+  ant = 4;
+
+}

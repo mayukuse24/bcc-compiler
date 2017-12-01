@@ -1,7 +1,15 @@
 %{
-#include "parser.tab.h"
-%}
 
+#include <string.h>
+#include "ast.h"
+#include "parser.hpp"
+
+extern "C" {
+ int yylex();
+}
+
+%}
+			
 number		[0-9][0-9]*
 identifier	[a-zA-Z][a-zA-Z0-9]*
 
@@ -12,6 +20,7 @@ identifier	[a-zA-Z][a-zA-Z0-9]*
 
 "for" {printf("FOR ");return(FOR);}
 "if"  {printf("IF ");return(IF);}
+"else"  {printf("ELSE ");return(ELSE);}
 "while" {printf("WHILE ");return(WHILE);}
 "L"{number}  {printf("LABEL ");return(LABEL);}
 "goto"  {printf("GOTO ");return(GOTO);}
@@ -21,37 +30,45 @@ identifier	[a-zA-Z][a-zA-Z0-9]*
 "println"  {printf("PRINTLN ");return(PRINTLN);}
 "read"  {printf("READ ");return(READ);}
 
-"||"  {printf("OR ");yylval=OR;return LOGOP;}
-"&&"  {printf("AND ");yylval=AND;return LOGOP;}
+"||"  {printf("OR ");return OR;}
+"&&"  {printf("AND ");return AND;}
 
-"int"	{printf("INTEGER ");yylval=INTEGER;return(DATATYPE);}
-"string"  {printf("STRING ");yylval=STRING;return(DATATYPE);}
+"int"	{printf("INTEGER ");return(DATATYPE);}
+"string"  {printf("STRING ");return(DATATYPE);}
 
+"true"  {printf("TRUE ");return(TRUE);}
+"false"  {printf("FALSE ");return(FALSE);}
 
-\"(\\.|[^"])*\"   {printf("TEXT ");return(TEXT);}
+\"(\\.|[^"])*\"   { printf("TEXT ");yylval.id = strdup(yytext);
+                    (yylval.id)++;
+                    yylval.id[strlen(yylval.id)-1] = 0;
+                    return(TEXT);
+                    //CAUTION: Buffer overflow 
+                   }
 
-{identifier}"["({number}|{identifier})"]"  {printf("ARRAY ");return(ARRAY);}
-{identifier}  {printf("IDENTI ");return(IDENTIFIER);}
-{number}  {printf("NUM ");return(NUMBER);}
+{identifier}  {printf("IDENTI "); yylval.id = strdup(yytext) ;return(IDENTIFIER);}
+{number}  {printf("NUM ");yylval.num=atoi(yytext);return(NUMBER);}
 
-"+"  {printf("ADD ");return '+';}
-"-"  {printf("SUB ");return '-';}
-"*"  {printf("MUL ");return '*';}
-"="  {printf("EQ ");return '=';}
+"+"  {printf("+ ");return '+';}
+"-"  {printf("- ");return '-';}
+"*"  {printf("* ");return '*';}
+"="  {printf("= ");return '=';}
 
-"{"  {printf("OCB ");return '{';}
-"}"  {printf("CCB ");return '}';}
+"{"  {printf("{ ");return '{';}
+"}"  {printf("} ");return '}';}
 
-">"  {printf("GT ");yylval=GT;return RELOP;}
-">=" {printf("GE ");yylval=GE;return RELOP;}
-"<"  {printf("LT ");yylval=LT;return RELOP;}
-"<=" {printf("LE ");yylval=LE;return RELOP;}
-"==" {printf("EQ ");yylval=EQ;return RELOP;}
-"!=" {printf("NE ");yylval=NE;return RELOP;}
+">"  {printf("> ");return GT;}
+">=" {printf(">= ");return GE;}
+"<"  {printf("< ");return LT;}
+"<=" {printf("<= ");return LE;}
+"==" {printf("== ");return EQ;}
+"!=" {printf("!= ");return NE;}
 
-","  {printf("COMMA ");return ',';}
-":"  {printf("COLON ");return ':';}
-";"  {printf("SCOLON ");return ';';}
+","  {printf(", ");return ',';}
+":"  {printf(": ");return ':';}
+";"  {printf("; ");return ';';}
+"["  {printf("[ ");return '[';}
+"]"  {printf("] ");return ']';}
 
 [ \t]  { /* Do nothing */ }
 

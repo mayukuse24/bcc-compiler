@@ -1,0 +1,112 @@
+#include <iostream>
+#include <stdlib.h>
+#include <string>
+#include <map>
+#include <list>
+
+using namespace std;
+
+class declaration()
+{
+
+    
+}
+
+class declblocknode
+{
+public :
+    list<declaration*> *decl_list;
+
+    
+};
+
+class codeblocknode
+{
+
+    
+};
+
+class prognode
+{
+    declnode *left;
+    codenode *right;
+    
+public :
+    prognode(declnode *L,codenode *R)
+    {
+	left = L;
+	right = R;
+    }
+};
+
+class exprnode
+{
+    
+};
+
+class operandnode : public exprnode
+{
+    
+};
+
+class varnode : public operandnode
+{
+    
+};
+
+class opnode : public exprnode
+{
+public :
+    exprnode *left;
+    exprnode *right;    
+
+    opnode(exprnode *L, exprnode *R)
+    {
+	left = L;
+	right = R;
+    }
+};
+    
+class numnode: public operandnode
+{
+    int val;
+public:   
+    numnode(int value)
+    {
+	val = value;
+    }
+};
+
+class identnode: public varnode
+{
+    std::string id;
+public:
+    identnode(std::string value)
+    {
+	id = value;
+    }
+};
+
+class plusnode: public opnode
+{
+    
+public :
+    plusnode(exprnode *L,exprnode *R) : opnode(L,R) {}
+};
+
+class mulnode: public opnode
+{
+
+public :
+    mulnode(exprnode *L,exprnode *R) : opnode(L,R) {}
+};
+
+class subnode: public opnode
+{
+public :
+    subnode(exprnode *L,exprnode *R) : opnode(L,R) {}
+};
+
+// Local Variables:
+// mode: c++
+// End:

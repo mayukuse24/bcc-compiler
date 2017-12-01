@@ -1,0 +1,12 @@
+<map id="relnode" name="relnode">
+<area shape="rect" id="node4" href="$classfalsenode.html" title="falsenode" alt="" coords="120,229,207,256"/>
+<area shape="rect" id="node5" href="$classrelopnode.html" title="relopnode" alt="" coords="231,229,317,256"/>
+<area shape="rect" id="node12" href="$classtruenode.html" title="truenode" alt="" coords="342,229,422,256"/>
+<area shape="rect" id="node2" href="$classboolnode.html" title="boolnode" alt="" coords="233,80,315,107"/>
+<area shape="rect" id="node6" href="$classeqnode.html" title="eqnode" alt="" coords="5,304,76,331"/>
+<area shape="rect" id="node7" href="$classgenode.html" title="genode" alt="" coords="100,304,171,331"/>
+<area shape="rect" id="node8" href="$classgtnode.html" title="gtnode" alt="" coords="195,304,262,331"/>
+<area shape="rect" id="node9" href="$classlenode.html" title="lenode" alt="" coords="286,304,353,331"/>
+<area shape="rect" id="node10" href="$classltnode.html" title="ltnode" alt="" coords="377,304,440,331"/>
+<area shape="rect" id="node11" href="$classnenode.html" title="nenode" alt="" coords="464,304,535,331"/>
+</map>

@@ -1,0 +1,10 @@
+<map id="relopnode" name="relopnode">
+<area shape="rect" id="node5" href="$classeqnode.html" title="eqnode" alt="" coords="5,304,76,331"/>
+<area shape="rect" id="node6" href="$classgenode.html" title="genode" alt="" coords="100,304,171,331"/>
+<area shape="rect" id="node7" href="$classgtnode.html" title="gtnode" alt="" coords="195,304,262,331"/>
+<area shape="rect" id="node8" href="$classlenode.html" title="lenode" alt="" coords="286,304,353,331"/>
+<area shape="rect" id="node9" href="$classltnode.html" title="ltnode" alt="" coords="377,304,440,331"/>
+<area shape="rect" id="node10" href="$classnenode.html" title="nenode" alt="" coords="464,304,535,331"/>
+<area shape="rect" id="node2" href="$classrelnode.html" title="relnode" alt="" coords="239,155,309,181"/>
+<area shape="rect" id="node3" href="$classboolnode.html" title="boolnode" alt="" coords="233,80,315,107"/>
+</map>

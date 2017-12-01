@@ -1,0 +1,9 @@
+<map id="stmtnode" name="stmtnode">
+<area shape="rect" id="node3" href="$classassignstmt.html" title="assignstmt" alt="" coords="5,155,100,181"/>
+<area shape="rect" id="node4" href="$classforstmt.html" title="forstmt" alt="" coords="124,155,195,181"/>
+<area shape="rect" id="node5" href="$classifelsestmt.html" title="ifelsestmt" alt="" coords="219,155,307,181"/>
+<area shape="rect" id="node6" href="$classifstmt.html" title="ifstmt" alt="" coords="331,155,393,181"/>
+<area shape="rect" id="node7" href="$classprintstmt.html" title="printstmt" alt="" coords="417,155,499,181"/>
+<area shape="rect" id="node8" href="$classreadstmt.html" title="readstmt" alt="" coords="524,155,605,181"/>
+<area shape="rect" id="node9" href="$classwhilestmt.html" title="whilestmt" alt="" coords="629,155,716,181"/>
+</map>
