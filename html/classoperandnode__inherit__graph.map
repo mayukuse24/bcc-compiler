@@ -1,7 +1,0 @@
-<map id="operandnode" name="operandnode">
-<area shape="rect" id="node4" href="$classnumnode.html" title="numnode" alt="" coords="5,229,88,256"/>
-<area shape="rect" id="node5" href="$classvarnode.html" title="varnode" alt="" coords="112,229,187,256"/>
-<area shape="rect" id="node2" href="$classexprnode.html" title="exprnode" alt="" coords="56,80,139,107"/>
-<area shape="rect" id="node6" href="$classarrnode.html" title="arrnode" alt="" coords="61,304,133,331"/>
-<area shape="rect" id="node7" href="$classidentnode.html" title="identnode" alt="" coords="158,304,245,331"/>
-</map>

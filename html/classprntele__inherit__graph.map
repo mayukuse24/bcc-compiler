@@ -1,6 +1,0 @@
-<map id="prntele" name="prntele">
-<area shape="rect" id="node3" href="$classtextnode.html" title="textnode" alt="" coords="5,155,85,181"/>
-<area shape="rect" id="node4" href="$classvarnode.html" title="varnode" alt="" coords="109,155,184,181"/>
-<area shape="rect" id="node5" href="$classarrnode.html" title="arrnode" alt="" coords="59,229,131,256"/>
-<area shape="rect" id="node6" href="$classidentnode.html" title="identnode" alt="" coords="155,229,242,256"/>
-</map>
