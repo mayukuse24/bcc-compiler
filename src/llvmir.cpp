@@ -52,8 +52,7 @@ void* subnode::codegen()
 {
     Value *L = static_cast<Value*>(left->codegen());
     Value *R = static_cast<Value*>(right->codegen());
-    if (!L || !R)
-	return nullptr;
+    if (!L || !R) return nullptr;
     
     return Builder.CreateSub(L, R, "subtmp");
 }
@@ -62,7 +61,7 @@ void* codeblock::codegen()
 {
     for(auto itr=codelist->begin();itr!=codelist->end();itr++)
     {
-	(*itr)->codegen();
+	    (*itr)->codegen();
     }
     return nullptr;
 }
@@ -71,23 +70,23 @@ void* declnode::codegen()
 {
     for(auto itr=instancelist->begin();itr!=instancelist->end();itr++)
     {
-	arrnode *arrid = dynamic_cast<arrnode *>(*itr);
-	if(arrid)
-	{
-	    Value *index = static_cast<Value*>(arrid->expridx->codegen());
-	    GlobalVariable *gvar = new GlobalVariable(*TheModule, ArrayType::get(Type::getInt64Ty(TheContext), index), false, GlobalValue::CommonLinkage, NULL, arrid->id);
-	    gvar->setInitializer(ConstantAggregateZero::get(ArrayType::get(Type::getInt64Ty(TheContext), index)));    
+        arrnode *arrid = dynamic_cast<arrnode *>(*itr);
+        if(arrid)
+        {
+            Value *index = static_cast<Value*>(arrid->expridx->codegen());
+            GlobalVariable *gvar = new GlobalVariable(*TheModule, ArrayType::get(Type::getInt64Ty(TheContext), index), false, GlobalValue::CommonLinkage, NULL, arrid->id);
+            gvar->setInitializer(ConstantAggregateZero::get(ArrayType::get(Type::getInt64Ty(TheContext), index)));    
 
-	}
-	else
-	{
-	    cout<<"varname "<<TheModule<<endl;
-	    GlobalVariable *gvar = new GlobalVariable(*TheModule, Type::getInt64Ty(TheContext), false, GlobalValue::CommonLinkage, NULL, (*itr)->id);
-	    gvar->setInitializer(ConstantInt::get(TheContext, APInt(64, StringRef("0"), 10)));
-	
-	}
-	
-	NamedValues[(*itr)->id] = gvar;
+        }
+        else
+        {
+            cout<<"varname "<<TheModule<<endl;
+            GlobalVariable *gvar = new GlobalVariable(*TheModule, Type::getInt64Ty(TheContext), false, GlobalValue::CommonLinkage, NULL, (*itr)->id);
+            gvar->setInitializer(ConstantInt::get(TheContext, APInt(64, StringRef("0"), 10)));
+        
+        }
+        
+        NamedValues[(*itr)->id] = gvar;
     }
     return nullptr;
 }
